@@ -5,22 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الوقت المتبقي للأذان</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f9f9f9; }
         #countdown { font-size: 24px; margin-top: 20px; color: #000000; }
+        footer { position: fixed; bottom: 0; width: 100%; text-align: center; background: #ffffff; padding: 10px; font-size: 14px; color: rgb(0, 0, 0); }
     </style>
 </head>
 <body>
 
-
+    <h1>الوقت المتبقي حتى الأذان في مدينة الرس</h1>
     <p id="nextPrayer"></p>
     <div id="countdown">جاري تحميل البيانات...</div>
 
     <script>
         async function getPrayerTimes() {
             try {
-                const response = await fetch("http://api.aladhan.com/v1/timingsByCity?city=Ar%20Rass&country=SA&method=2");
+                const apiUrl = "http://api.aladhan.com/v1/timingsByCity?city=Ar%20Rass&country=SA&method=2";
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`);
                 const data = await response.json();
-                const timings = data.data.timings;
+                const timings = JSON.parse(data.contents).data.timings;
 
                 const prayerNames = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
                 const now = new Date();
@@ -30,7 +32,7 @@
                 for (let prayer of prayerNames) {
                     let prayerTime = new Date();
                     let [hours, minutes] = timings[prayer].split(":");
-                    prayerTime.setHours(hours, minutes, 0);
+                    prayerTime.setHours(hours, minutes, 0, 0);
 
                     if (prayerTime > now) {
                         nextPrayer = prayer;
@@ -40,6 +42,7 @@
                 }
 
                 if (nextPrayer) {
+                    document.getElementById("nextPrayer").innerText = `الصلاة القادمة: ${translatePrayer(nextPrayer)}`;
                     startCountdown(nextPrayerTime);
                 } else {
                     document.getElementById("countdown").innerText = "لا توجد أوقات أذان متبقية اليوم.";
@@ -84,9 +87,10 @@
 
         getPrayerTimes();
     </script>
-<footer style="position: fixed; bottom: 0; width: 100%; text-align: center; background: #ffffff; padding: 10px; font-size: 14px; color: rgb(0, 0, 0);">
-    &copy; _21x
-</footer>
+
+    <footer>
+        &copy; _21x
+    </footer>
 
 </body>
 </html>
