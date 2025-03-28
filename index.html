@@ -19,10 +19,10 @@
     <script>
         async function getPrayerTimes() {
             try {
-                const apiUrl = "http://api.aladhan.com/v1/timingsByCity?city=Ar%20Rass&country=SA&method=2";
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`);
+                const apiUrl = "https://api.aladhan.com/v1/timingsByCity?city=Ar%20Rass&country=SA&method=2";
+                const response = await fetch(apiUrl);
                 const data = await response.json();
-                const timings = JSON.parse(data.contents).data.timings;
+                const timings = data.data.timings;
 
                 const prayerNames = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
                 const now = new Date();
